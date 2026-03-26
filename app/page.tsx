@@ -39,7 +39,6 @@ const galleryImages = [
     colSpan: "col-span-1 row-span-1",
   },
 ];
-// https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=900&q=80
 const eventsCovered = [
   {
     title: "Destination Weddings",
