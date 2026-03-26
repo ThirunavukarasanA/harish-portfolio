@@ -1,587 +1,406 @@
+"use client";
+
 import Image from "next/image";
+import { motion, useScroll, useTransform, Variants } from "framer-motion";
+import { useRef } from "react";
+import { Camera, Calendar, MapPin, ArrowRight, Mail, LayoutGrid } from "lucide-react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const galleryImages = [
   {
-    src: "https://images.unsplash.com/photo-1521316730702-829a8e30dfd2?auto=format&fit=crop&w=900&q=80",
+    src: "https://images.unsplash.com/photo-1587271636175-90d58cdad458?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     label: "Wedding Stories",
+    colSpan: "md:col-span-2 md:row-span-2",
   },
   {
     src: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
     label: "Portrait Sessions",
+    colSpan: "col-span-1 row-span-1",
   },
   {
     src: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=900&q=80",
     label: "Street Moments",
+    colSpan: "col-span-1 row-span-1",
   },
   {
     src: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=900&q=80",
     label: "Travel Diaries",
+    colSpan: "col-span-1 row-span-2",
   },
   {
-    src: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=900&q=80",
+    src: "/images/hiphop3.jpg",
     label: "Live Events",
+    colSpan: "md:col-span-2 row-span-1",
   },
   {
     src: "https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=900&q=80",
     label: "Editorial Frames",
+    colSpan: "col-span-1 row-span-1",
   },
 ];
-
+// https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=900&q=80
 const eventsCovered = [
   {
     title: "Destination Weddings",
-    description:
-      "Intimate ceremonies and grand celebrations, captured with cinematic detail and emotion.",
+    description: "Intimate ceremonies & grand celebrations, captured with cinematic detail.",
+    icon: <Camera className="w-5 h-5 text-brand-400" />,
   },
   {
-    title: "Brand & Editorial Shoots",
-    description:
-      "High-impact visuals for brands, magazines, and creators who need images that stand out.",
+    title: "Brand & Editorial",
+    description: "High-impact visuals for brands and creators needing standout imagery.",
+    icon: <LayoutGrid className="w-5 h-5 text-rose-400" />,
   },
   {
-    title: "Concerts & Cultural Events",
-    description:
-      "Fast-paced, atmospheric coverage that freezes the energy of live performances.",
+    title: "Concerts & Cultural",
+    description: "Fast-paced coverage that freezes the energy of live performances.",
+    icon: <Calendar className="w-5 h-5 text-orange-400" />,
   },
 ];
 
+const FADE_UP_ANIMATION_VARIANTS: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } },
+};
+
+const STAGGER_CHILDREN: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
 export default function Home() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-zinc-900 text-zinc-100 scroll-smooth">
-      <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-black/70 backdrop-blur-xl">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-cyan-400/20 ring-1 ring-cyan-400/60">
-              <span className="text-xs font-semibold tracking-[0.18em] text-cyan-300">
-                HP
-              </span>
-            </div>
-            <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold tracking-[0.18em] text-zinc-200">
-                HARISH
-              </span>
-              <span className="text-xs text-zinc-500">
-                Photography & Visual Stories
-              </span>
-            </div>
-          </div>
+    <div
+      ref={containerRef}
+      className="min-h-screen bg-[#050505] text-zinc-100 scroll-smooth selection:bg-brand-500/30 selection:text-brand-200"
+    >
+      <Navbar />
 
-          <div className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] text-zinc-400 md:flex">
-            <a href="#hero" className="hover:text-cyan-300 transition-colors">
-              Home
-            </a>
-            <a href="#about" className="hover:text-cyan-300 transition-colors">
-              About
-            </a>
-            <a
-              href="#gallery"
-              className="hover:text-cyan-300 transition-colors"
-            >
-              Gallery
-            </a>
-            <a href="#events" className="hover:text-cyan-300 transition-colors">
-              Events
-            </a>
-            <a
-              href="#contact"
-              className="hover:text-cyan-300 transition-colors"
-            >
-              Contact
-            </a>
-          </div>
+      <main className="relative z-10 mx-auto flex max-w-7xl flex-col gap-32 px-6 pb-24 pt-32 lg:pt-40">
 
-          <a
-            href="#contact"
-            className="rounded-full bg-cyan-400 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-black shadow-[0_0_40px_rgba(34,211,238,0.7)] transition hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-[0_0_55px_rgba(34,211,238,0.95)]"
-          >
-            Book a Shoot
-          </a>
-        </nav>
-      </header>
-
-      <main className="mx-auto flex max-w-6xl flex-col gap-24 px-4 pb-24 pt-16 sm:px-6 lg:px-8 lg:pt-20">
-        {/* Hero Section */}
-        <section
-          id="hero"
-          className="grid items-center gap-12 lg:grid-cols-[1.3fr,1fr]"
+        {/* HERO SECTION */}
+        <motion.section
+          id="home"
+          style={{ y: heroY, opacity: heroOpacity }}
+          className="grid items-center gap-16 lg:grid-cols-[1.2fr,1fr]"
         >
-          <div className="space-y-8">
-            <p className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/70 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-zinc-400 shadow-[0_0_40px_rgba(24,24,27,0.9)]">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-sky-500 shadow-[0_0_14px_rgba(34,211,238,0.8)] animate-pulse-glow" />
-              Cinematic Frames. Honest Emotions.
-            </p>
+          <motion.div
+            variants={STAGGER_CHILDREN}
+            initial="hidden"
+            animate="show"
+            className="space-y-8"
+          >
+            <motion.div variants={FADE_UP_ANIMATION_VARIANTS} className="inline-flex items-center gap-2 rounded-full border border-zinc-800/80 bg-zinc-900/40 px-4 py-1.5 backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-300">
+                Cinematic Frames. Honest Emotions.
+              </span>
+            </motion.div>
 
-            <div className="space-y-4">
-              <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
-                <span className="bg-gradient-to-br from-zinc-50 via-zinc-100 to-zinc-400 bg-clip-text text-transparent">
-                  Photography that
-                </span>
-                <br />
-                <span className="bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent">
-                  makes light feel alive.
-                </span>
-              </h1>
-              <p className="max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base">
-                I craft bold, vibrant visuals for people, brands, and stories
-                that deserve to be seen. From intimate portraits to electric
-                events, every frame is designed to feel like a memory you can
-                step back into.
-              </p>
-            </div>
+            <motion.h1
+              variants={FADE_UP_ANIMATION_VARIANTS}
+              className="text-balance text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl lg:leading-[1.1]"
+            >
+              <span className="text-white">Photography that</span>
+              <br />
+              <span className="bg-linear-to-r from-brand-500 via-brand-400 to-brand-300 bg-clip-text text-transparent">
+                makes light feel alive.
+              </span>
+            </motion.h1>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <motion.p
+              variants={FADE_UP_ANIMATION_VARIANTS}
+              className="max-w-xl text-base leading-relaxed text-zinc-400 sm:text-lg"
+            >
+              I craft bold, vibrant visuals for people, brands, and stories that deserve to be seen. Every frame is designed to feel like a memory you can step back into.
+            </motion.p>
+
+            <motion.div variants={FADE_UP_ANIMATION_VARIANTS} className="flex flex-wrap items-center gap-4">
               <a
                 href="#contact"
-                className="group flex items-center gap-2 rounded-full bg-cyan-400 px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-black shadow-[0_0_40px_rgba(34,211,238,0.8)] transition hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-[0_0_60px_rgba(34,211,238,1)]"
+                className="group flex items-center gap-2 rounded-full border border-brand-400 bg-brand-400/10 px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-brand-300 backdrop-blur-md transition-all hover:bg-brand-400 hover:text-black"
               >
                 Let&apos;s Create Together
-                <span className="transition-transform group-hover:translate-x-0.5">
-                  →
-                </span>
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
               <a
                 href="#gallery"
-                className="rounded-full border border-zinc-700/80 bg-zinc-900/70 px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-300 transition hover:-translate-y-0.5 hover:border-cyan-400/70 hover:bg-zinc-900 hover:text-cyan-200"
+                className="flex items-center gap-2 rounded-full px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-zinc-400 transition-colors hover:text-white"
               >
                 View Portfolio
               </a>
-            </div>
+            </motion.div>
+          </motion.div>
 
-            <div className="flex flex-wrap gap-6 text-xs text-zinc-500">
-              <div className="space-y-1">
-                <p className="font-semibold tracking-[0.18em] text-zinc-400">
-                  SPECIALTIES
-                </p>
-                <p>Portraits, Weddings, Editorial, Events</p>
-              </div>
-              <div className="space-y-1">
-                <p className="font-semibold tracking-[0.18em] text-zinc-400">
-                  BASED IN
-                </p>
-                <p>Coimbatore, Available PanIndia</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="pointer-events-none absolute -inset-16 -z-10 opacity-60 blur-3xl">
-              <div className="h-full w-full bg-[conic-gradient(at_top,_#22d3ee,_#4f46e5,_#22d3ee)] opacity-40 animate-pan-gradient" />
-            </div>
-
-            <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black shadow-[0_35px_120px_rgba(0,0,0,0.9)] animate-float-soft">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_0%,rgba(236,254,255,0.06),transparent_55%),radial-gradient(circle_at_100%_80%,rgba(129,140,248,0.12),transparent_55%)]" />
-              <div className="relative aspect-square">
-                <Image
-                  src="https://images.unsplash.com/photo-1516726817505-f5ed825624d8?auto=format&fit=crop&w=900&q=80"
-                  alt="Signature portrait by Harish"
-                  fill
-                  priority
-                  className="object-cover object-center transition-transform duration-[450ms] hover:scale-[1.03]"
-                />
-              </div>
-              <div className="relative flex items-center justify-between gap-4 border-t border-zinc-800/70 bg-black/60 px-4 py-3 text-xs text-zinc-300">
-                <p className="flex items-center gap-2">
-                  <span className="inline-flex h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,1)]" />
-                  Currently booking{" "}
-                  <span className="font-semibold text-cyan-300">
-                    2025–26 weddings
-                  </span>
-                </p>
-                <p className="hidden text-[11px] text-zinc-500 sm:inline">
-                  Limited slots · Let&apos;s plan early
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* About Section */}
-        <section
-          id="about"
-          className="grid gap-10 rounded-3xl border border-zinc-800/80 bg-zinc-950/80 px-5 py-10 shadow-[0_30px_100px_rgba(0,0,0,0.9)] sm:px-8 sm:py-12 lg:grid-cols-[1.1fr,1fr]"
-        >
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
-              About the Photographer
-            </p>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Turning passing moments into
-              <span className="bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent">
-                {" "}
-                vivid, living stories.
-              </span>
-            </h2>
-            <p className="max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base">
-              I&apos;m Harish — a photographer obsessed with light, detail, and
-              genuine emotion. My work blends clean compositions with bold
-              color and contrast, creating images that feel modern yet timeless.
-            </p>
-            <p className="max-w-xl text-sm leading-relaxed text-zinc-500 sm:text-base">
-              Whether it&apos;s a quiet portrait or a loud concert, I focus on
-              the in-between moments: the laughter, the stillness, the glances
-              that say everything. Those are the frames you&apos;ll come back
-              to years from now.
-            </p>
-
-            <div className="mt-4 flex flex-wrap gap-4 text-xs text-zinc-400">
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 px-4 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-                  Years Shooting
-                </p>
-                <p className="mt-1 text-xl font-semibold text-zinc-50">6+</p>
-              </div>
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 px-4 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-                  Events Covered
-                </p>
-                <p className="mt-1 text-xl font-semibold text-zinc-50">
-                  120+
-                </p>
-              </div>
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 px-4 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-                  Cities & Destinations
-                </p>
-                <p className="mt-1 text-xl font-semibold text-zinc-50">
-                  15+
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-6 rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-5 sm:p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
-              Photography Style
-            </p>
-            <ul className="space-y-4 text-sm text-zinc-400">
-              <li className="flex gap-3">
-                <span className="mt-1 h-1.5 w-5 rounded-full bg-gradient-to-r from-cyan-400 to-sky-500 shadow-[0_0_16px_rgba(34,211,238,0.8)]" />
-                <div>
-                  <p className="font-medium text-zinc-100">
-                    Clean, cinematic, and modern.
-                  </p>
-                  <p className="text-xs text-zinc-500">
-                    Sharp compositions with rich contrast, designed for both
-                    print and social.
-                  </p>
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-1 h-1.5 w-5 rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400" />
-                <div>
-                  <p className="font-medium text-zinc-100">
-                    True-to-moment colors.
-                  </p>
-                  <p className="text-xs text-zinc-500">
-                    Dark, moody palettes with vibrant highlights that feel
-                    alive, not over-edited.
-                  </p>
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-1 h-1.5 w-5 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500" />
-                <div>
-                  <p className="font-medium text-zinc-100">
-                    Emotion-first storytelling.
-                  </p>
-                  <p className="text-xs text-zinc-500">
-                    You&apos;ll see real connections, not forced poses —
-                    images that feel like you.
-                  </p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </section>
-
-        {/* CTA Strip */}
-        <section className="rounded-3xl border border-cyan-500/40 bg-gradient-to-r from-cyan-500/10 via-sky-500/5 to-indigo-500/10 px-5 py-6 text-xs text-zinc-200 shadow-[0_0_70px_rgba(34,211,238,0.4)] sm:px-8 sm:py-7 lg:flex lg:items-center lg:justify-between">
-          <div className="space-y-1">
-            <p className="font-semibold uppercase tracking-[0.24em] text-cyan-300">
-              Limited 2025–26 Slots
-            </p>
-            <p className="max-w-xl text-[13px] text-zinc-300">
-              Secure your dates early for weddings, portraits, or brand
-              projects. Let&apos;s design a shoot that feels uniquely yours —
-              from moodboards to final edits.
-            </p>
-          </div>
-          <a
-            href="#contact"
-            className="mt-4 inline-flex items-center justify-center rounded-full bg-cyan-400 px-5 py-2 font-semibold uppercase tracking-[0.22em] text-black shadow-[0_0_40px_rgba(34,211,238,0.9)] transition hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-[0_0_60px_rgba(34,211,238,1)] lg:mt-0"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, rotate: -2 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="relative"
           >
-            Check Availability
-          </a>
-        </section>
+            <div className="absolute -inset-4 z-0 bg-linear-to-tr from-brand-500/20 to-rose-500/20 opacity-50 blur-2xl rounded-full" />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10 bg-zinc-900 shadow-2xl">
+              <Image
+                src="/images/harish1.jpeg"
+                alt="Signature portrait"
+                fill
+                priority
+                className="object-cover transition-transform duration-700 hover:scale-105"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-6">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-400 text-black">
+                    <Calendar className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-brand-300">Booking Now</p>
+                    <p className="text-sm font-medium text-white">2025–26 Weddings</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.section>
 
-        {/* Gallery Section */}
-        <section id="gallery" className="space-y-6">
+        {/* ABOUT BENTO GRID */}
+        <motion.section
+          id="about"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={STAGGER_CHILDREN}
+          className="space-y-12"
+        >
+          <div className="text-center">
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.25em] text-brand-400">The Photographer</h2>
+            <p className="mt-4 text-3xl font-semibold sm:text-4xl">Turning passing moments into living stories.</p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3 md:grid-rows-2">
+            <motion.div
+              variants={FADE_UP_ANIMATION_VARIANTS}
+              className="group relative overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/50 p-8 md:col-span-2 backdrop-blur-sm transition-colors hover:bg-zinc-900/80"
+            >
+              <h3 className="text-xl font-medium text-white">Hey, I&apos;m Harish.</h3>
+              <p className="mt-4 text-zinc-400 leading-relaxed">
+                A photographer obsessed with light, detail, and genuine emotion. My work blends clean compositions with bold color and contrast, creating images that feel modern yet timeless. Whether it&apos;s a quiet portrait or a loud concert, I focus on the in-between moments: the laughter, the stillness, the glances that say everything. Look closely.
+              </p>
+            </motion.div>
+
+            <motion.div
+              variants={FADE_UP_ANIMATION_VARIANTS}
+              className="group relative flex flex-col justify-center overflow-hidden rounded-3xl border border-white/5 bg-linear-to-br from-brand-900/20 to-zinc-900/50 p-8 text-center backdrop-blur-sm"
+            >
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-zinc-500">Years Shooting</h4>
+              <p className="mt-2 text-5xl font-bold tracking-tighter text-white">6<span className="text-brand-400">+</span></p>
+            </motion.div>
+
+            <motion.div
+              variants={FADE_UP_ANIMATION_VARIANTS}
+              className="group relative flex flex-col justify-center overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/50 p-8 text-center backdrop-blur-sm"
+            >
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-zinc-500">Events Covered</h4>
+              <p className="mt-2 text-5xl font-bold tracking-tighter text-white">120<span className="text-rose-400">+</span></p>
+            </motion.div>
+
+            <motion.div
+              variants={FADE_UP_ANIMATION_VARIANTS}
+              className="group relative overflow-hidden rounded-3xl border border-brand-500/20 bg-brand-950/20 p-8 md:col-span-2 backdrop-blur-sm"
+            >
+              <h4 className="text-lg font-medium text-brand-100 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-brand-400" />
+                Based in Coimbatore, Available Worldwide.
+              </h4>
+              <p className="mt-2 text-zinc-400">
+                Comfortable working with planners, makeup artists, and brand teams to keep everything on schedule while allowing space for spontaneous moments.
+              </p>
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* GALLERY GRID */}
+        <motion.section
+          id="gallery"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={STAGGER_CHILDREN}
+          className="space-y-12"
+        >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
-                Image Gallery
-              </p>
-              <h2 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
-                A curated glimpse into recent work.
-              </h2>
+              <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-brand-400">Selected Work</p>
+              <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">A curated glimpse.</h2>
             </div>
-            <p className="max-w-md text-sm text-zinc-400">
-              Explore a mix of weddings, portraits, events, and editorial
-              projects — each gallery is crafted with a distinct mood and
-              narrative.
+            <p className="max-w-xs text-sm text-zinc-400">
+              Exploring weddings, portraits, and editorial projects crafted with mood and narrative.
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {galleryImages.map((image) => (
-              <figure
-                key={image.src}
-                className="group relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-950/80 shadow-[0_25px_80px_rgba(0,0,0,0.9)]"
+          <div className="grid auto-rows-[250px] grid-cols-1 gap-4 md:grid-cols-3 md:auto-rows-[300px]">
+            {galleryImages.map((image, idx) => (
+              <motion.figure
+                variants={FADE_UP_ANIMATION_VARIANTS}
+                key={idx}
+                className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-900 ${image.colSpan}`}
               >
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <Image
-                    src={image.src}
-                    alt={image.label}
-                    fill
-                    className="object-cover object-center transition duration-500 group-hover:scale-105 group-hover:brightness-[1.12]"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                </div>
-                <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between px-4 pb-3 pt-4 text-xs text-zinc-200">
-                  <span className="font-medium">{image.label}</span>
-                  <span className="flex items-center gap-1 text-[11px] text-zinc-400">
-                    View Story
-                    <span className="transition-transform group-hover:translate-x-0.5">
-                      ↗
-                    </span>
-                  </span>
+                <Image
+                  src={image.src}
+                  alt={image.label}
+                  fill
+                  className="object-cover transition-all duration-700 ease-in-out group-hover:scale-110 group-hover:opacity-80"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <figcaption className="absolute inset-x-0 bottom-0 translate-y-4 p-6 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                  <p className="text-lg font-medium text-white">{image.label}</p>
+                  <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-brand-400 flex items-center gap-1">
+                    View Story <ArrowRight className="h-3 w-3" />
+                  </p>
                 </figcaption>
-              </figure>
+              </motion.figure>
             ))}
           </div>
-        </section>
+        </motion.section>
 
-        {/* Events Covered Section */}
-        <section
+        {/* EVENTS SECTION */}
+        <motion.section
           id="events"
-          className="grid gap-10 rounded-3xl border border-zinc-800/80 bg-zinc-950/80 px-5 py-10 sm:px-8 sm:py-12 lg:grid-cols-[1.1fr,1fr]"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={STAGGER_CHILDREN}
+          className="space-y-12"
         >
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
-              Events Covered
-            </p>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              From quiet vows to loud stages — I&apos;ve been there with a
-              camera.
-            </h2>
-            <p className="max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base">
-              Every event has its own tempo. I adapt to the pace — moving
-              silently when needed, and diving into the crowd when the energy
-              spikes — so you get images that feel immersive, not intrusive.
-            </p>
-
-            <ul className="mt-4 space-y-5 text-sm text-zinc-300">
-              {eventsCovered.map((event) => (
-                <li key={event.title} className="space-y-1">
-                  <p className="font-medium text-zinc-50">{event.title}</p>
-                  <p className="text-xs text-zinc-500">{event.description}</p>
-                </li>
-              ))}
-            </ul>
+          <div className="text-center">
+            <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-brand-400">What I Capture</p>
+            <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">From quiet vows to loud stages.</h2>
           </div>
 
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-cyan-500/10 via-zinc-950 to-purple-500/10 p-5 text-xs text-zinc-200 shadow-[0_30px_100px_rgba(0,0,0,1)] sm:p-6">
-              <p className="font-semibold uppercase tracking-[0.24em] text-cyan-300">
-                Featured Experience
-              </p>
-              <p className="mt-3 text-sm text-zinc-100">
-                3-day destination wedding in Goa with over 800 guests — covered
-                solo lead with a small creative team, delivering over 900
-                curated images and a highlight story in under 4 weeks.
-              </p>
-              <p className="mt-3 text-[11px] text-zinc-400">
-                I&apos;m comfortable working with planners, makeup artists, and
-                brand teams to keep everything on schedule while still allowing
-                space for spontaneous moments.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/90 p-5 text-xs text-zinc-300 sm:p-6">
-              <p className="font-semibold uppercase tracking-[0.22em] text-zinc-400">
-                Perfect for
-              </p>
-              <ul className="mt-3 space-y-2 text-[13px] text-zinc-400">
-                <li>Wedding ceremonies & receptions</li>
-                <li>Engagements & pre-wedding stories</li>
-                <li>Brand launches & campaigns</li>
-                <li>Concerts, festivals, and cultural events</li>
-              </ul>
-
-              <a
-                href="#contact"
-                className="mt-4 inline-flex items-center justify-center rounded-full border border-cyan-400/70 px-4 py-2 font-semibold uppercase tracking-[0.22em] text-cyan-200 transition hover:-translate-y-0.5 hover:bg-cyan-500/10"
+          <div className="grid gap-4 md:grid-cols-3">
+            {eventsCovered.map((event, idx) => (
+              <motion.div
+                variants={FADE_UP_ANIMATION_VARIANTS}
+                key={idx}
+                className="group relative overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 p-8 backdrop-blur-sm transition-colors hover:bg-zinc-800/60"
               >
-                Plan Your Event Coverage
-              </a>
-            </div>
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 shadow-inner ring-1 ring-white/10">
+                  {event.icon}
+                </div>
+                <h3 className="text-lg font-medium text-white">{event.title}</h3>
+                <p className="mt-3 text-sm text-zinc-400 leading-relaxed">{event.description}</p>
+              </motion.div>
+            ))}
           </div>
-        </section>
+        </motion.section>
 
-        {/* Contact Section */}
-        <section
+        {/* CONTACT SECTION */}
+        <motion.section
           id="contact"
-          className="grid gap-10 rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-zinc-950 via-black to-zinc-950 px-5 py-10 sm:px-8 sm:py-12 lg:grid-cols-[1.1fr,1fr]"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={FADE_UP_ANIMATION_VARIANTS}
         >
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
-              Contact
-            </p>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Tell me about the story you want to capture.
-            </h2>
-            <p className="max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base">
-              Share a few details about your event, shoot idea, or brand, and
-              I&apos;ll respond with availability, pricing, and a custom
-              approach within 24–48 hours.
-            </p>
+          <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-zinc-900 p-8 sm:p-12 lg:p-16">
+            <div className="absolute top-0 right-0 -m-32 h-64 w-64 rounded-full bg-brand-500/20 blur-[100px]" />
+            <div className="absolute bottom-0 left-0 -m-32 h-64 w-64 rounded-full bg-rose-500/20 blur-[100px]" />
 
-            <div className="mt-4 grid gap-4 text-sm text-zinc-300 sm:grid-cols-2">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-                  Email
-                </p>
-                <a
-                  href="mailto:hello@harishphoto.com"
-                  className="mt-1 inline-flex items-center gap-1 text-cyan-300 hover:text-cyan-200"
-                >
-                  hello@harishphoto.com
-                  <span>↗</span>
-                </a>
+            <div className="relative grid gap-12 lg:grid-cols-2 lg:gap-24">
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-4xl font-semibold text-white">Let&apos;s start crafting your visual story.</h2>
+                  <p className="mt-4 text-zinc-400">Share a few details about your upcoming event or project, and I&apos;ll get back to you with pricing and availability.</p>
+                </div>
+
+                <div className="space-y-6">
+                  <a href="mailto:hello@harishphoto.com" className="group flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/5 transition-colors group-hover:bg-brand-500/20 group-hover:text-brand-400">
+                      <Mail className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-zinc-500">Email Me</p>
+                      <p className="text-sm font-medium text-white transition-colors group-hover:text-brand-400">hello@harishphoto.com</p>
+                    </div>
+                  </a>
+                  <a href="https://instagram.com" target="_blank" rel="noreferrer" className="group flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/5 transition-colors group-hover:bg-brand-500/20 group-hover:text-brand-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-zinc-500">Follow Work</p>
+                      <p className="text-sm font-medium text-white transition-colors group-hover:text-brand-400">@harish.photography</p>
+                    </div>
+                  </a>
+                </div>
               </div>
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-                  Instagram
-                </p>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-1 inline-flex items-center gap-1 text-cyan-300 hover:text-cyan-200"
-                >
-                  @harish.photography
-                  <span>↗</span>
-                </a>
-              </div>
+
+              <form className="space-y-4 rounded-3xl border border-white/5 bg-black/40 p-6 backdrop-blur-md sm:p-8">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Name</label>
+                    <input type="text" placeholder="John Doe" className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Email</label>
+                    <input type="email" placeholder="john@example.com" className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Mobile Number</label>
+                    <input type="tel" placeholder="+91 90000 00000" className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Session Type</label>
+                    <select className="w-full appearance-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all focus:border-brand-400 focus:bg-white/10" defaultValue="">
+                      <option value="" disabled className="text-zinc-800">Select session</option>
+                      <option className="text-black">Wedding</option>
+                      <option className="text-black">Portrait</option>
+                      <option className="text-black">Event / Concert</option>
+                      <option className="text-black">Other</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Date & Location</label>
+                    <input type="text" placeholder="22 Feb, Chennai" className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Message</label>
+                  <textarea rows={4} placeholder="Tell me more about your ideas..." className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                </div>
+
+                <button type="submit" className="w-full rounded-xl bg-brand-400 px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-black transition-all hover:bg-brand-300 active:scale-[0.98]">
+                  Send Inquiry
+                </button>
+                <p className="text-center text-[10px] text-zinc-600">This is a demo form. Replace with your endpoint.</p>
+              </form>
             </div>
           </div>
+        </motion.section>
 
-          <form className="space-y-4 text-sm text-zinc-200">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1.5">
-                <label
-                  htmlFor="name"
-                  className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-400"
-                >
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  placeholder="Your full name"
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950/80 px-3 py-2.5 text-sm text-zinc-100 outline-none ring-cyan-400/0 transition focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-500/40"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label
-                  htmlFor="email"
-                  className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-400"
-                >
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950/80 px-3 py-2.5 text-sm text-zinc-100 outline-none ring-cyan-400/0 transition focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-500/40"
-                />
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1.5">
-                <label
-                  htmlFor="type"
-                  className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-400"
-                >
-                  Session Type
-                </label>
-                <select
-                  id="type"
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950/80 px-3 py-2.5 text-sm text-zinc-100 outline-none ring-cyan-400/0 transition focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-500/40"
-                  defaultValue=""
-                >
-                  <option value="" disabled>
-                    Choose a session
-                  </option>
-                  <option>Wedding</option>
-                  <option>Portrait</option>
-                  <option>Brand / Editorial</option>
-                  <option>Event / Concert</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <label
-                  htmlFor="date"
-                  className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-400"
-                >
-                  Date & Location
-                </label>
-                <input
-                  id="date"
-                  type="text"
-                  placeholder="E.g. 22 Feb 2026 · Chennai"
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950/80 px-3 py-2.5 text-sm text-zinc-100 outline-none ring-cyan-400/0 transition focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-500/40"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="message"
-                className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-400"
-              >
-                Tell me more
-              </label>
-              <textarea
-                id="message"
-                rows={4}
-                placeholder="Share your ideas, vibe, must-have shots, or inspiration."
-                className="w-full resize-none rounded-xl border border-zinc-800 bg-zinc-950/80 px-3 py-2.5 text-sm text-zinc-100 outline-none ring-cyan-400/0 transition focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-500/40"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-cyan-400 px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-black shadow-[0_0_40px_rgba(34,211,238,0.9)] transition hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-[0_0_60px_rgba(34,211,238,1)] sm:w-auto"
-            >
-              Send Inquiry
-            </button>
-            <p className="text-[11px] text-zinc-500">
-              This form is for demo purposes only. Replace with your preferred
-              contact or booking system.
-            </p>
-          </form>
-        </section>
       </main>
 
-      <footer className="border-t border-zinc-900/80 bg-black/90 py-6 text-center text-[11px] text-zinc-600">
-        <p>
-          © {new Date().getFullYear()} Harish Photography. Crafted with light,
-          color, and stories.
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }

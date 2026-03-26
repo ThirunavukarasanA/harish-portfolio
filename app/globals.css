@@ -10,6 +10,15 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Custom Brand Orange based on #DA5721 */
+  --color-brand-100: #fcece5;
+  --color-brand-200: #f8d0be;
+  --color-brand-300: #f3ae8e;
+  --color-brand-400: #DA5721;
+  --color-brand-500: #b5471a;
+  --color-brand-900: #491c0a;
+  --color-brand-950: #291005;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,6 +26,10 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
