@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Camera, Calendar, MapPin, ArrowRight, Mail, LayoutGrid } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -82,6 +82,88 @@ export default function Home() {
 
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    sessionType: "",
+    dateLocation: "",
+    message: ""
+  });
+  
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+    setFormData({ ...formData, name: val });
+    if (errors.name) setErrors({ ...errors, name: "" });
+  };
+
+  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+    setFormData({ ...formData, mobile: val });
+    if (errors.mobile) setErrors({ ...errors, mobile: "" });
+  };
+
+  const handleDateLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^a-zA-Z0-9,\s]/g, "");
+    setFormData({ ...formData, dateLocation: val });
+    if (errors.dateLocation) setErrors({ ...errors, dateLocation: "" });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) newErrors.name = "Name is required.";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Invalid email format.";
+    }
+    if (!formData.mobile) {
+      newErrors.mobile = "Mobile number is required.";
+    } else if (formData.mobile.length !== 10) {
+      newErrors.mobile = "Must be exactly 10 digits.";
+    }
+    if (!formData.sessionType) {
+      newErrors.sessionType = "Session type is required.";
+    }
+    if (!formData.dateLocation.trim()) {
+      newErrors.dateLocation = "Date & Location is required.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Attempt Submission
+    try {
+      const btn = (e.target as any).querySelector('button[type="submit"]');
+      if (btn) btn.disabled = true;
+
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to submit inquiry");
+      }
+
+      alert("Inquiry successfully saved to the database!");
+      setFormData({ name: "", email: "", mobile: "", sessionType: "", dateLocation: "", message: "" });
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong while saving your inquiry.");
+    } finally {
+      const btn = (e.target as any).querySelector('button[type="submit"]');
+      if (btn) btn.disabled = false;
+    }
+  };
 
   return (
     <div
@@ -351,48 +433,53 @@ export default function Home() {
                 </div>
               </div>
 
-              <form className="space-y-4 rounded-3xl border border-white/5 bg-black/40 p-6 backdrop-blur-md sm:p-8">
+              <form onSubmit={handleSubmit} noValidate className="space-y-4 rounded-3xl border border-white/5 bg-black/40 p-6 backdrop-blur-md sm:p-8">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Name</label>
-                    <input type="text" placeholder="John Doe" className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                    <input type="text" value={formData.name} onChange={handleNameChange} placeholder="John Doe" className={`w-full rounded-xl border ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-brand-400'} bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:bg-white/10`} />
+                    {errors.name && <p className="text-[10px] text-red-500">{errors.name}</p>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Email</label>
-                    <input type="email" placeholder="john@example.com" className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                    <input type="email" value={formData.email} onChange={(e) => { setFormData({...formData, email: e.target.value}); if(errors.email) setErrors({...errors, email: ""}); }} placeholder="john@example.com" className={`w-full rounded-xl border ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-brand-400'} bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:bg-white/10`} />
+                    {errors.email && <p className="text-[10px] text-red-500">{errors.email}</p>}
                   </div>
                   <div className="space-y-1.5 sm:col-span-2">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Mobile Number</label>
-                    <input type="tel" placeholder="+91 90000 00000" className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                    <input type="tel" value={formData.mobile} onChange={handleMobileChange} placeholder="+91 90000 00000" className={`w-full rounded-xl border ${errors.mobile ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-brand-400'} bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:bg-white/10`} />
+                    {errors.mobile && <p className="text-[10px] text-red-500">{errors.mobile}</p>}
                   </div>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Session Type</label>
-                    <select className="w-full appearance-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all focus:border-brand-400 focus:bg-white/10" defaultValue="">
+                    <select value={formData.sessionType} onChange={(e) => { setFormData({...formData, sessionType: e.target.value}); if(errors.sessionType) setErrors({...errors, sessionType: ""}); }} className={`w-full appearance-none rounded-xl border ${errors.sessionType ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-brand-400'} bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all focus:bg-white/10`}>
                       <option value="" disabled className="text-zinc-800">Select session</option>
-                      <option className="text-black">Wedding</option>
-                      <option className="text-black">Portrait</option>
-                      <option className="text-black">Event / Concert</option>
-                      <option className="text-black">Other</option>
+                      <option value="Wedding" className="text-black">Wedding</option>
+                      <option value="Portrait" className="text-black">Portrait</option>
+                      <option value="Event / Concert" className="text-black">Event / Concert</option>
+                      <option value="Other" className="text-black">Other</option>
                     </select>
+                    {errors.sessionType && <p className="text-[10px] text-red-500">{errors.sessionType}</p>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Date & Location</label>
-                    <input type="text" placeholder="22 Feb, Chennai" className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                    <input type="text" value={formData.dateLocation} onChange={handleDateLocationChange} placeholder="22 Feb, Chennai" className={`w-full rounded-xl border ${errors.dateLocation ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-brand-400'} bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:bg-white/10`} />
+                    {errors.dateLocation && <p className="text-[10px] text-red-500">{errors.dateLocation}</p>}
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Message</label>
-                  <textarea rows={4} placeholder="Tell me more about your ideas..." className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Message (Optional)</label>
+                  <textarea rows={4} value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} placeholder="Tell me more about your ideas..." className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
                 </div>
 
                 <button type="submit" className="w-full rounded-xl bg-brand-400 px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-black transition-all hover:bg-brand-300 active:scale-[0.98]">
                   Send Inquiry
                 </button>
-                <p className="text-center text-[10px] text-zinc-600">This is a demo form. Replace with your endpoint.</p>
+                {/* <p className="text-center text-[10px] text-zinc-600">This form is protected by strict client-side validation.</p> */}
               </form>
             </div>
           </div>
