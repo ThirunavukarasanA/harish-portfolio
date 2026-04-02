@@ -90,7 +90,7 @@ export default function Home() {
     dateLocation: "",
     message: ""
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -441,7 +441,7 @@ export default function Home() {
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Email</label>
-                    <input type="email" value={formData.email} onChange={(e) => { setFormData({...formData, email: e.target.value}); if(errors.email) setErrors({...errors, email: ""}); }} placeholder="john@example.com" className={`w-full rounded-xl border ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-brand-400'} bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:bg-white/10`} />
+                    <input type="email" value={formData.email} onChange={(e) => { setFormData({ ...formData, email: e.target.value }); if (errors.email) setErrors({ ...errors, email: "" }); }} placeholder="john@example.com" className={`w-full rounded-xl border ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-brand-400'} bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:bg-white/10`} />
                     {errors.email && <p className="text-[10px] text-red-500">{errors.email}</p>}
                   </div>
                   <div className="space-y-1.5 sm:col-span-2">
@@ -454,7 +454,7 @@ export default function Home() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Session Type</label>
-                    <select value={formData.sessionType} onChange={(e) => { setFormData({...formData, sessionType: e.target.value}); if(errors.sessionType) setErrors({...errors, sessionType: ""}); }} className={`w-full appearance-none rounded-xl border ${errors.sessionType ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-brand-400'} bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all focus:bg-white/10`}>
+                    <select value={formData.sessionType} onChange={(e) => { setFormData({ ...formData, sessionType: e.target.value }); if (errors.sessionType) setErrors({ ...errors, sessionType: "" }); }} className={`w-full appearance-none rounded-xl border ${errors.sessionType ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-brand-400'} bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all focus:bg-white/10`}>
                       <option value="" disabled className="text-zinc-800">Select session</option>
                       <option value="Wedding" className="text-black">Wedding</option>
                       <option value="Portrait" className="text-black">Portrait</option>
@@ -472,7 +472,7 @@ export default function Home() {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Message (Optional)</label>
-                  <textarea rows={4} value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} placeholder="Tell me more about your ideas..." className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
+                  <textarea rows={4} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} placeholder="Tell me more about your ideas..." className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-zinc-600 focus:border-brand-400 focus:bg-white/10" />
                 </div>
 
                 <button type="submit" className="w-full rounded-xl bg-brand-400 px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-black transition-all hover:bg-brand-300 active:scale-[0.98]">

@@ -208,3 +208,4 @@ All implemented in `app/page.tsx` as a **single scrolling page**:
 
 This SSOT should be updated whenever the design language, structure, or primary flows of the site change. It defines what makes the **Harish Photography** portfolio consistent, vibrant, and on-brand.
 
+ok now in this bento grid i want to navigate like when click that view story or click that image go to path like /gallery/wedding-stories like this type of slug path to show a wedding photos only like this type of slug path and image shown need in this home gallery section with proper responsove
